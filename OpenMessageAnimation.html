@@ -1,0 +1,173 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Practice animating messages</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+		function MessageFormat() {
+			$(".message").each(function(i,obj) {
+				if (i==0) { $(this).css({"top":"90px", "right":"200px", "position":"absolute"}); }
+				if (i==1) { $(this).css({"bottom":"90px", "right":"200px", "position":"absolute"}); }
+				if (i==2) { $(this).css({"bottom":"90px", "left":"200px", "position":"absolute"}); }
+			});
+		};
+
+		var number;
+
+		function ButtonClick() {
+			$(".button").click(function() {
+				var code = $(this).find("span").html();
+				if (code=="The MISSION" && number != 1) { 
+					$(".message").eq(0).toggleClass("open");
+					$(".message span").slice(0,2).toggleClass("open");
+					$(".message").slice(1,3).removeClass("open");
+					$(".message span").slice(2,6).removeClass("open");}
+				if (code=="The WORKOUTS" && number != 2) { 
+					$(".message").eq(1).toggleClass("open");
+					$(".message span").slice(2,4).toggleClass("open");
+					$(".message").eq(0).removeClass("open");
+					$(".message").eq(2).removeClass("open");
+					$(".message span").slice(0,2).removeClass("open");
+					$(".message span").slice(4,6).removeClass("open");}
+				if (code=="The RESULTS" && number != 3) { 
+					$(".message").eq(2).toggleClass("open");
+					$(".message span").slice(4,6).toggleClass("open");
+					$(".message").slice(0,2).removeClass("open");
+					$(".message span").slice(0,4).removeClass("open");}
+			});
+		};
+
+
+		$( document ).ready(ButtonClick);
+		$( document ).ready(MessageFormat);
+
+	</script>
+
+	<style type="text/css">
+
+		@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic);
+		@import url(http://fonts.googleapis.com/css?family=Lato:300,700);
+
+		body
+		{
+			background-color: rgba(4,25,44,.9);
+			color: white;
+			font: 12px "Source Sans Pro";
+			cursor: default;
+		}
+
+		span
+		{
+			display: block;
+			margin-top: 2px;
+		}
+
+		.button
+		{
+			position: relative;
+			left:30px;
+			display: inline-block;
+			background-color: rgba(255,255,255,.2);
+			width: 100px;
+			height: 20px;
+			text-align: center;
+			margin: 10px 5px 0px 5px;
+			cursor: pointer;
+
+			-webkit-transition: background-color .2s;
+		}
+
+		.button:hover
+		{
+			background-color: rgba(255,255,255,.3);
+		}
+
+		.message
+		{
+			background-color: rgba(230,230,245,.07);
+			width: 200px;
+			height: 200px;
+			opacity: 0;
+			line-height: 22px;
+			border-left: 2px solid white;
+			border-right: 2px solid white;
+			font: 12px "Lato";
+
+			-webkit-transform: scale(.2);
+			-webkit-transition:all .8s .1s, opacity .5s 0s;
+		}
+
+		.message span 
+		{
+			margin: 10px 10px 0px 10px;
+			opacity: 0;
+			-webkit-transition:opacity .4s .9s;
+		}
+
+		.message span:nth-of-type(1)
+		{
+			text-align: center;
+		}
+
+		.open, .message .open
+		{
+			-webkit-transform:scale(1);
+			opacity: 1;
+		}
+
+		.TBborder
+		{
+			position: absolute;
+			border-top: 2px solid white;
+			border-bottom: 2px solid white;
+			width: 20px;
+			height: 98%;
+		}
+
+		.right
+		{
+			position: absolute;
+			right: 0px;
+			top: 0px;
+		}
+
+	</style>
+</head>
+
+<body>
+
+	<div class = "button"><span>The MISSION</span></div>
+	<div class = "button"><span>The WORKOUTS</span></div>
+	<div class = "button"><span>The RESULTS</span></div>
+
+	<div class = "message">
+		<div class = "TBborder"></div>
+		<span>The Mission</span>
+		<br>
+		<span>Create a plan, commit to it, view daily results and improve your workout.</span>
+		<div class = "TBborder right"></div>
+	</div>
+	<div class = "message">
+		<div class = "TBborder"></div>
+		<span>The Workouts</span>
+		<br>
+		<span>Our algorithms create random workouts that just might make you more fit!</span>
+		<div class = "TBborder right"></div>
+	</div>
+	<div class = "message">
+		<div class = "TBborder"></div>
+		<span>The Results</span>
+		<br>
+		<span>Your progress is charted, organized, and delivered to you daily via email and dreaded reminders!</span>
+		<div class = "TBborder right"></div>
+	</div>
+
+</body>
+</html>

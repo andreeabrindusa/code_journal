@@ -1,0 +1,177 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Slider Experiment</title>
+
+	<!-- jquery library --> 
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	SliderLocation = [.2, .4, .05];
+	SliderNames = ["property 1", "property 2", "property 3"];
+
+	function CreateSliders() {
+		Total = SliderLocation.length;
+		for (n=0; n<Total; n++) {
+			var ValueBox = '<div class = "ShowValue"></div>';
+			$("body").append(ValueBox);
+			var Container = '<div class = "container"> <div class = "slider"></div> <div class = "bar"></div> </div>';
+			$("body").append(Container);
+		}
+	};
+
+	function DragSlider() {
+		$(".bar").draggable({axis:"x", containment: "parent"});
+
+		$(".bar").each(function(i,obj) {
+			var BarPosition = 488 * SliderLocation[i];
+			$(this).css("left",BarPosition+"px");
+		});
+
+		$(".container").each(function(i,obj) {
+			var FromTop = (i * 80) + 100;
+			$(this).css("top",FromTop+"px");
+			$(this).attr("title",SliderNames[i]); 
+
+			var ValueBox = $(".ShowValue").eq(i);
+			ValueBox.css("top",FromTop+"px");
+			ValueBox.html(SliderLocation[i].toFixed(2));
+		});
+
+		$("html").mouseup(function() {
+			$(".bar").each(function(i,obj) {
+				var position = $(this).position();
+				SliderLocation[i] = (position.left/488).toFixed(2);
+				$(".ShowValue").eq(i).html(SliderLocation[i]);
+			});
+		});
+	}
+
+	function AddSlider() {
+		$("#AddSlider").click(function() {
+			var NewName = prompt("New Slider Name:","property n");
+			SliderNames.push(NewName);
+
+			Total = SliderLocation.length;
+			var ValueBox = '<div class = "ShowValue">0.02</div>';
+			$("body").append(ValueBox);
+			var Container = '<div class = "container"> <div class = "slider"></div> <div class = "bar"></div> </div>';
+			$("body").append(Container);
+			SliderLocation.push(.1);
+
+			var NewBar = $(".bar").eq(Total);
+			NewBar.draggable({axis:"x", containment: "parent"});
+			var NewContainer = $(".container").eq(Total);
+			NewContainer.css("top",(Total*80+100)+"px");
+			NewContainer.attr("title",NewName);
+			var NewBox = $(".ShowValue").eq(Total);
+			NewBox.css("top",(Total*80+100)+"px");
+		});
+	};
+
+	$(document).ready(CreateSliders);
+	$(document).ready(DragSlider);
+	$(document).ready(AddSlider);
+
+	</script>
+	<style type="text/css">
+
+	.container
+	{
+		position: absolute;
+		left: 20px;
+		width: 500px;
+		height: 40px;
+	}
+
+	.slider
+	{
+		position: absolute;
+		top: 0px;
+		left: 0px;
+
+		width: 0; 
+		height: 0;
+		opacity: .5; 
+		border-top: 20px solid transparent;
+		border-bottom: 20px solid transparent; 
+	
+		border-right: 500px solid rgba(109,76,229,.9);
+		overflow: hidden;
+	}
+
+	.bar
+	{
+		position: absolute;
+		left: 2%;
+
+		width: 10px;
+		height: 40px;
+		background-color: white;
+		border:  1px solid rgba(109,76,229,.4);
+		cursor: pointer;
+	}
+
+	.bar:active
+	{
+		background-color: rgba(240,240,240,1);
+	}
+
+	.ShowValue
+	{
+		position: absolute;
+		left: 550px;
+		width: 60px;
+		height: 40px;
+		border: 1px solid rgba(240,240,240,1);
+
+		font: 14px sans-serif;
+		color: black;
+		line-height: 40px;
+		text-align: center;
+	}
+
+	#Info
+	{
+		position: absolute;
+		width: 600px;
+		height: 40px;
+		left: 20px;
+		top: 20px;
+		font: 12px sans-serif;
+		text-align: center;
+		cursor: default;
+		line-height: 20px;
+	}
+
+	#AddSlider
+	{
+		width: 40%;
+		margin-left: 30%;
+		cursor: pointer;
+		background-color: rgba(240,240,240,1);
+	}
+
+	#AddSlider:hover
+	{
+		background-color: rgba(220,220,220,1);
+	}
+
+	</style>
+</head>
+<body>
+
+	<div id = "Info">
+		This program creates sliders for various properties. Hover for property names.
+		<div id = "AddSlider">Add a Slider</div>
+		<hr>
+	</div>
+
+</body>
+</html>

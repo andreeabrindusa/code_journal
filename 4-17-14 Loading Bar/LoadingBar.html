@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Loading Bar</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<script type="text/javascript">
+
+	var Images = ["../friends.jpg","../desert.jpg","../windswept_trees.jpg","../flowers.jpg","../dark.jpg"];
+
+	var ImgLength = Images.length;
+
+	function CreateImages() {
+
+		for (i=0;i<ImgLength;i++) {
+			var image = "<img src = '"+Images[i]+"' onload = 'OneLoaded()'>";
+			$('.gallery').append(image);
+		}
+	}
+
+	function AllLoaded() {
+		$(".gallery").css("opacity","1");
+	}
+
+	function OneLoaded() {
+
+		var progressbar = $('#progressbar'),  
+	   		max = progressbar.attr('max'),  
+	   		value = progressbar.val();
+
+		value = value + 100/ImgLength;
+	  	addValue = progressbar.val(value);
+
+	  	if (value == max) {
+	  		AllLoaded();
+	  	}
+
+	}
+
+
+	$(document).ready(CreateImages);
+
+
+
+	</script>
+
+	<style type="text/css">
+
+	body
+	{
+		position: relative;
+		width: 80%;
+		left: 10%;
+	}
+
+	progress 
+	{
+		position: relative;
+		width: 20%;
+		left: 40%;
+		background-color: rgb(220,220,220);
+		border: 0;
+		height: 18px;
+		border-radius: 9px;
+		margin: 40px 0px 10px 0px;
+	}
+
+	progress::-webkit-progress-bar 
+	{  
+    	background-color: rgb(220,220,220);
+		border: 0;
+		height: 18px;
+		border-radius: 9px;  
+		overflow: hidden;
+	}  
+
+	progress::-webkit-progress-value 
+	{  
+  		background-color: rgba(100,100,250,.8);
+		border: 0;
+		height: 18px;
+		border-radius: 9px 0px 0px 9px; 
+	}  
+
+	progress::-moz-progress-bar 
+	{  
+		background-color: rgba(200,200,200,.8);
+		border: 0;
+		height: 18px;
+		border-radius: 9px; 
+		margin: 40px; 
+	}  
+
+	.gallery
+	{
+		width: 100%;
+		opacity: 0;
+
+		-webkit-transition: all 1s;
+		-moz-transition: all 1s;
+	}
+
+	img 
+	{
+		padding-top: 40px;
+		opacity: 1;
+		float: left;
+		margin: .5%;
+		width: 24%;
+	}
+
+
+	</style>
+
+</head>
+
+<body>
+
+
+	<progress id = "progressbar" value = "0" max = "100"></progress>
+
+	<div class = "gallery"></div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Dino Game NEW</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	var Grid_Unit;
+
+	// Make a grid out of the GameScreen object. 
+	// Each square will have side length 5% of the height.
+	// Center the new GameScreen object
+
+	function MakeGrid() {
+		Grid_Unit = .05 * $("#GameScreen").height();
+
+		var Grid_Width = Math.floor($("#GameScreen").width() / Grid_Unit);
+		Grid_Width = Grid_Width * Grid_Unit;
+		Grid_Left = ($(window).width() - Grid_Width) / 2;
+
+		$("#GameScreen").css("width",Grid_Width+"px");
+		$("#GameScreen").css("left",Grid_Left+"px");
+	};
+
+
+	// Deduce Dino's dimensions in terms of the new grid.
+	// Set Dino's dimensions. He should be 2 unit tall and 5 units wide.
+
+	function DimensionDino() {
+		var Dino_Height = Grid_Unit * 2;
+		var Dino_Width = Grid_Unit * 5;
+		$("#Dino").css("height",Dino_Height+"px");
+		$("#Dino").css("width",Dino_Width+"px");
+	};
+
+
+	// Many objects need to be positioned randomly on the grid. 
+	// Call this function on an object to place it.
+
+	function Randomly_Place(object) {
+		var Object_Height = Math.round(object.height() / Grid_Unit);
+		var Object_Width = Math.round(object.width() / Grid_Unit);
+
+		var Screen_Units_Wide = $("#GameScreen").width() / Grid_Unit;
+		var Screen_Units_Tall = 20;
+
+		var X_Coord = Math.random() * (Screen_Units_Wide - Object_Width);
+		X_Coord = Math.floor(X_Coord);
+		X_Coord = X_Coord * Grid_Unit;
+
+		var Y_Coord = Math.random() * (Screen_Units_Tall - 1);
+		Y_Coord = Math.floor(Y_Coord) - (Object_Height - 1); 
+		var Object_ZIndex = Y_Coord;
+		Y_Coord = Y_Coord * Grid_Unit; 
+
+		object.css({"left":X_Coord+"px", "top":Y_Coord+"px", "z-index":Object_ZIndex});
+	};
+
+
+	// Checks if Dino is adjacent to the "object" in the specified direction on the grid
+	// Useful to know if he is next to flowers, obstacles, or other characters
+
+	function NextTo(object, direction) {
+	//	Grid_Unit = .05 * $("#GameScreen").height();
+
+		var Dino_Position = $("#Dino").position();
+		var Dino_Coord = [Dino_Position.left, Dino_Position.top];
+
+		var Object_Position = object.position();
+		var Object_Coord = [Object_Position.left, Object_Position.top];
+
+		if (direction == "Right") {
+		//	alert("unit: " + Grid_Unit + ", " + Object_Coord + " = " + Dino_Coord);
+			if (Object_Coord[1] == Dino_Coord[1] && 
+				(Dino_Coord[0] + 4 * Grid_Unit) <= Object_Coord[0] <= (Dino_Coord[0] + 5 * Grid_Unit)) {
+				return true;}
+			else {return false;}
+		}
+
+		if (direction == "Left") {
+			if (Object_Coord[1] == Dino_Coord[1] && 
+				(Dino_Coord[0] - Grid_Unit) <= Object_Coord[0] <= Dino_Coord[0]) {
+				return true;}
+			else {return false;}
+		}	
+
+		if (direction == "Front") {
+		//	alert("unit: " + Grid_Unit + ", " + Object_Coord + " = " + Dino_Coord);
+			if (Object_Coord[1] == (Dino_Coord[1] + Grid_Unit) && 
+				Object_Coord[0] == (Dino_Coord[0] + 2*Grid_Unit)) {
+				return true;}
+			else {return false;}
+		}		
+
+		if (direction == "Back") {
+			if (Object_Coord[1] == (Dino_Coord[1] - Grid_Unit) && 
+				Object_Coord[0] == (Dino_Coord[0] + 2*Grid_Unit)) {
+				return true;}
+			else {return false;}
+		}	
+	};
+
+
+	// Dino can walk. His steps are one unit wide in any direction. 
+	// When the arro buttons are pressed, move Dino one unit in that direction 
+	// and change his picture so that he's facing the correct way.
+
+	function MoveDino() {
+		var Step_Size = Grid_Unit;
+		var Grid_Width = $("#GameScreen").width();
+		var Grid_Height = $("#GameScreen").height();
+		var Dino_Width = $("#Dino").width();
+		var Dino_Height = $("#Dino").height();
+
+		var Arrow_Up = 38;
+		var Arrow_Down = 40;
+		var Arrow_Left = 37;
+		var Arrow_Right = 39;
+		var Space_Bar = 32;
+
+		var Dino_Position = $("#Dino").position();
+		var DistanceFrom_Left = Dino_Position.left;
+		var DistanceFrom_Top = Dino_Position.top;
+
+		var Facing_Direction = "Right";
+		var Dino_ZIndex = 1;
+
+		$(window).keydown(function() {
+			var Key = event.which;
+			if (Key == Arrow_Right) {
+				Facing_Direction = "Right";									// Face right
+				$("#Dino").css("background-image","url('DinoRight.png')");
+				if (DistanceFrom_Left < Grid_Width - Dino_Width) {			// Step right
+					DistanceFrom_Left = DistanceFrom_Left + Step_Size;
+					$("#Dino").css("left",DistanceFrom_Left+"px");
+				};
+			};
+
+			if (Key == Arrow_Left) {
+				Facing_Direction = "Left";									// Face left
+				$("#Dino").css("background-image","url('DinoLeft.png')");	
+				if (DistanceFrom_Left > -Step_Size) {						// Step left
+					DistanceFrom_Left = DistanceFrom_Left - Step_Size;	
+					$("#Dino").css("left",DistanceFrom_Left+"px");
+				};
+			};
+
+			if (Key == Arrow_Down) {
+				Facing_Direction = "Front";									// Face down
+				$("#Dino").css("background-image","url('DinoFront.png')");
+				if (DistanceFrom_Top < Grid_Height - Dino_Height) {			// Step down
+					DistanceFrom_Top = DistanceFrom_Top + Step_Size;
+					Dino_ZIndex = Dino_ZIndex + 1;
+					$("#Dino").css("top",DistanceFrom_Top+"px");
+					$("#Dino").css("z-index",Dino_ZIndex);
+				};
+			};	
+
+			if (Key == Arrow_Up) {
+				Facing_Direction = "Back";									// Face upward
+				$("#Dino").css("background-image","url('DinoBack.png')");
+				if (DistanceFrom_Top > -Step_Size) {						// Step upward
+					DistanceFrom_Top = DistanceFrom_Top - Step_Size;
+					Dino_ZIndex = Dino_ZIndex - 1;
+					$("#Dino").css("top",DistanceFrom_Top+"px");
+					$("#Dino").css("z-index",Dino_ZIndex);
+				};
+			};	
+
+			if (Key == Space_Bar) {
+				var Flower = $(".Flower");
+				if (NextTo(Flower,Facing_Direction) == true) {
+					$("#Dino").css("background-image","url('DinoEating"+Facing_Direction+".png')");
+				//	Eat_Flower();
+					setTimeout(function() {
+						$("#Dino").css("background-image","url('Dino"+Facing_Direction+".png')"); 
+					},500);
+				}
+			};			
+		});
+	};
+
+
+	// Create and randomly place some shrubs.
+
+	function Create_Shrubs() {
+		var Shrubs_Total = 10;
+
+		for (i=0; i<Shrubs_Total; i++) {
+			var Shrub_Html = '<div class = "Shrub"></div>';
+			$("#GameScreen").append(Shrub_Html);
+		};
+		for (j=0; j<Shrubs_Total; j++) {		
+			var Current_Shrub = $(".Shrub").eq(j);
+			Current_Shrub.css("width",(2* Grid_Unit)+"px");
+			Current_Shrub.css("height",Grid_Unit+"px");
+			Randomly_Place(Current_Shrub);
+		};
+	};
+
+
+	// Create and randomly place a flower.
+
+	function Create_Flowers() {	
+		var Flowers_Total = 1;								// If multiple flowers are on the screen
+
+		var Current_Flower = $(".Flower");
+		Current_Flower.css("width",Grid_Unit + "px");
+		Current_Flower.css("height",(2*Grid_Unit) + "px");
+
+		Randomly_Place(Current_Flower);
+	//	Random_Type(Current_Flower);						// When more flower types are available
+															// One type is chosen and animated
+	};														
+
+
+	// This function is called when a flower is eaten. 
+	// The flower is animated as being eaten, and its current blooming animation is interrupted.
+	// The flower's location is reset.
+
+	function Eat_Flower() {
+
+	};
+
+
+
+	$(document).ready(MakeGrid);
+	$(document).ready(DimensionDino);
+	$(document).ready(Create_Shrubs);
+	$(document).ready(Create_Flowers);
+	$(document).ready(MoveDino);
+
+
+
+	</script>
+	<style type="text/css">
+
+
+	body
+	{
+		background-color: rgb(230,230,230);
+	}
+
+	#GameScreen
+	{
+		position: absolute;
+		width: 90%;
+		height: 94%;
+		left: 5%;
+		top: 3%;
+		background-color: rgb(120,216,120);
+
+		overflow: hidden;
+	}
+
+
+	#Dino
+	{
+		position: absolute;
+		width: 12%;
+		height: 10%;
+		background-image: url('DinoRight.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		background-position: center;
+		z-index: 1;
+
+	}
+
+
+	.Shrub
+	{
+		position: absolute;
+		width: 5%;
+		height: 5%;
+		background-image: url('grass.png');
+		background-size: auto 80%;
+		background-repeat: no-repeat;
+	}
+
+
+	.Flower
+	{
+		position: absolute;
+		width: 5%;
+		height: 10%;
+		background-image: url('flower.png');
+		background-size: auto 60%;
+		background-repeat: no-repeat;
+		background-position: bottom;
+
+	}	
+
+
+
+
+	</style>
+</head>
+<body>
+
+	<div id = "GameScreen">
+		<div class = "Flower"></div>
+		<div id = "Dino"></div>
+	</div>
+
+
+</body>
+</html>

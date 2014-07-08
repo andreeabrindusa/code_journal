@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Loading Bar</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<script type="text/javascript">
+
+	var Images = ["../friends.jpg","../desert.jpg","../windswept_trees.jpg","../flowers.jpg","../dark.jpg"];
+
+	var ImgLength = Images.length;
+
+	function CreateImages() {
+
+		for (i=0;i<ImgLength;i++) {
+			var image = "<img src = '"+Images[i]+"'>";
+			$('.gallery').append(image);
+		}
+	}
+
+	function AllLoaded() {
+		$(".gallery").css("opacity","1");
+		$("#LoadingCircle").css("opacity","0");
+	}
+
+
+	$(document).ready(CreateImages);
+	$(window).load(AllLoaded);
+
+
+
+	</script>
+
+	<style type="text/css">
+
+	@-webkit-keyframes rotate
+	{
+		from {
+			-webkit-transform: rotate(0deg);
+			-moz-transition: rotate(0deg);
+			-o-transition: rotate(0deg);
+			}
+		
+		to {
+			-webkit-transform: rotate(360deg);
+			-moz-transition: rotate(360deg);
+			-o-transition: rotate(360deg);
+			}
+	}
+
+	body
+	{
+		position: relative;
+		width: 80%;
+		left: 10%;
+	}
+
+	#LoadingCircle
+	{
+		position: absolute;
+		left: 45%;
+		top: 100px;
+		width: 50px;
+		height: 50px;
+		border-left: 4px solid rgb(100,200,160);
+		border-radius: 50%;
+
+		-webkit-animation: rotate 2s linear infinite;
+		animation: rotate 2s linear infinite;
+	}
+ 
+
+	.gallery
+	{
+		width: 100%;
+		opacity: 0;
+
+		-webkit-transition: all 1s;
+		-moz-transition: all 1s;
+	}
+
+	img 
+	{
+		padding-top: 40px;
+		opacity: 1;
+		float: left;
+		margin: .5%;
+		width: 24%;
+	}
+
+
+	</style>
+
+</head>
+
+<body>
+
+
+	<div id = "LoadingCircle"></div>
+
+	<div class = "gallery"></div>
+
+
+
+</body>
+
+</html>

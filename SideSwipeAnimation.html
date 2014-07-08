@@ -1,0 +1,245 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Gallery SideScroll Animation</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<!--
+	<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+	-->
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	var images = ["windswept_trees.jpg","flowers.jpg","friends.jpg","dark.jpg","desert.jpg"];
+
+	/*  */
+	function MakeGallery() {
+		var table = $("<table></table>");
+		var row = $("<tr></tr>");
+		var total = images.length;
+		$(".panel").css("width",(total*350)+"px");
+		for (n=0; n<total; n++) {
+			var object = "<td><div class = 'pic'>"+(n+1)+"</div></td>";
+			row.append(object);
+		}
+		table.append(row);
+		$(".panel").append(table);
+
+		var PanelHeight = $(".panel").height();
+		var PicTop = (PanelHeight - 270)/2;
+		$(".pic").css("margin-top",PicTop);
+
+		$(".pic").each(function(i,obj) {
+			$(this).css("background-image","url('"+images[i]+"')");
+		});
+
+		var WindowWidth = $(window).width();
+		var WindowHeight = $(window).height();
+		var TopDist = (WindowHeight - 500)/2;
+		var LeftDist = (WindowWidth - 500)/2;
+		$(".selected").css("left",LeftDist);
+		if ($(".selected").css("top")!="-510px") {$(".selected").css("top",TopDist);}
+	};
+
+	function ArrowClick() {
+		var AmountLeft = 0;
+		var max = -(images.length * 310);
+		$(".arrow-left").click(function() {
+			AmountLeft = AmountLeft + 700;
+			if (AmountLeft>0) {AmountLeft=0;}
+			$(".panel").animate({left: AmountLeft+"px"},1000);
+		});
+		$(".arrow-right").click(function() {
+			if (AmountLeft-700<max) {AmountLeft=AmountLeft;}
+			else {AmountLeft = AmountLeft - 700;}
+			$(".panel").animate({left: AmountLeft+"px"},1000);
+		});
+	};
+
+	function GallerySwipe() {
+		var AmountLeft = 0;
+		var max = -(images.length * 310);
+		$(".panel").on("swiperight", function() {
+			AmountLeft = AmountLeft + 700;
+			if (AmountLeft>0) {AmountLeft=0;}
+			$(".panel").animate({left: AmountLeft+"px"},1000);
+		});
+		$(".panel").on("swipeleft", function() {
+			if (AmountLeft-700<max) {AmountLeft=AmountLeft;}
+			else {AmountLeft = AmountLeft - 700;}
+			$(".panel").animate({left: AmountLeft+"px"},1000)
+		});
+	};
+
+	function PicClick() {
+		$(".pic").click(function() {
+			$(".selected").fadeOut(0);
+			$(".selected").fadeIn(800);
+			var WindowWidth = $(window).width();
+			var WindowHeight = $(window).height();
+			var TopDist = (WindowHeight - 500)/2;
+			var LeftDist = (WindowWidth - 500)/2;
+			$(".selected").css({"top":TopDist,"left":LeftDist});
+			var image = $(this).css("background-image");
+			$(".selected").css("background-image",image);
+			$(".pic").css("opacity",".5");
+		});
+		$(".cancel").click(function() {
+			$(".selected").css("top","-510px");
+			$(".pic").css("opacity","1");
+		});
+	};
+
+	$( document ).ready(ArrowClick);
+	$( document ).ready(MakeGallery);
+	$( document ).ready(PicClick);
+	$( document ).ready(GallerySwipe);
+
+	window.onresize = function() {
+		stop();
+		ArrowClick();
+		MakeGallery();
+	};
+	
+	</script>
+
+	<style type="text/css">
+
+	@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic);
+
+	body
+	{
+		cursor: default;
+		font: 16px "Source Sans Pro";
+		color: white;
+		margin: 0px;
+		overflow: hidden;
+	}
+
+	.galleryArea
+	{
+		position: absolute;
+		left: 0px;
+		top: 10%;
+		width: 100%;
+		height: 80%;
+		background-color: rgba(220,220,220,1);
+	}
+
+	.panelArea
+	{
+		position: absolute;
+		width: 80%;
+		left: 10%;
+		height: 80%;
+		top: 10%;
+		overflow: hidden;
+	}
+
+	.panel
+	{
+		position: absolute;
+		width: 2000px;
+		height: 100%;
+	}
+
+	.pic
+	{
+		width: 270px;
+		height: 270px;
+		float: left;
+		margin-left: 40px;
+		margin-right: 40px;
+		background-color: rgba(100,140,120,.1);
+		border: 1px solid white;
+		text-align: center;
+		line-height: 250px;
+
+		background-size:auto 270px;
+		background-position:center;
+		background-repeat: no-repeat;
+
+		cursor: pointer;
+		-webkit-transition: all 1.5s, margin-top 0s;
+	}
+
+	.selected
+	{
+		position: absolute; 
+		top: -510px;
+		height: 500px;
+		width: 500px;
+		border: 1px solid white;
+
+		background-size: auto 500px;
+		background-position: center;
+		background-repeat: no-repeat;
+		-webkit-transition: top 1.5s .8s;
+	}
+
+	.cancel
+	{
+		position: absolute;
+		right: 2%;
+		top: 2%;
+		font: 16px sans-serif;
+		cursor: pointer;
+	}
+
+	.arrow-left 
+	{
+		position: absolute;
+		top: 44%;
+		left: 30px; 
+		width: 0; 
+		height: 0;
+		opacity: .5; 
+		border-top: 17px solid transparent;
+		border-bottom: 17px solid transparent; 
+	
+		border-right:10px solid rgba(110,110,130,1); 
+		cursor: pointer;
+	}
+
+	.arrow-right 
+	{
+		position: absolute;
+		top: 44%;
+		right: 30px;
+		width: 0; 
+		height: 0; 
+		opacity: .5;
+		border-top: 17px solid transparent;
+		border-bottom: 17px solid transparent;
+	
+		border-left: 10px solid rgba(110,110,130,1);
+		cursor: pointer;
+	}
+
+	.arrow-right:hover, .arrow-left:hover
+	{
+		opacity: .8;
+	}
+
+	</style>
+</head>
+
+<body>
+
+	<div class = "galleryArea">
+		<div class = "panelArea">
+			<div class = "panel"></div>
+		</div>
+		<div class = "arrow-left"></div>
+		<div class = "arrow-right"></div>
+	</div>
+
+	<div class = "selected">
+		<div class = "cancel">X</div>
+	</div>
+
+</body>
+</html>

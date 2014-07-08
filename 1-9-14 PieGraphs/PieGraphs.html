@@ -1,0 +1,184 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Pie Graphs of My Day</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">	
+
+	var Colors = ["rgb(144,115,249)","rgb(252,179,0)","rgb(2,105,50)","rgb(252,233,110)","rgb(255,135,48)","rgb(182,183,212)"];
+
+	var Ids = ["pie1","pie2","pie3","pie4","pie5","pie6"];
+
+	var Pies = 	[[20,180,60,80,20],
+				[200,100,60],
+				[100,100,60,100],
+				[50,50,50,50,160],
+				[60,210,30,60],
+				[30,40,30,100,130,30]];
+
+	function DrawPie(num) {
+		var NumPieces = Pies[num].length;
+		var id = Ids[num];
+
+		for (j=0; j<NumPieces; j++) {
+			var CompletePiece = "<div class = 'rightEdge'><div class = 'piece'></div></div>";
+			$("#"+id).append(CompletePiece);
+		}
+
+		var total = 0;
+		for (i=0; i<NumPieces; i++) {
+			if (Pies[num][i]>180) {
+				$("#"+id+" .piece").eq(i).css("opacity","0");
+			}
+
+			$("#" +id+" .piece").eq(i).css("background-color",Colors[i]);
+			$("#" +id+" .piece").eq(i).css("-webkit-transform","rotate(-"+Pies[num][i]+"deg)");
+
+			total = total + Pies[num][i];
+			$("#" +id+" .rightEdge").eq(i).css("-webkit-transform","rotate("+total+"deg)");
+		}
+	};
+
+	function DrawAll() {
+		NumPies = Pies.length;
+		for (n=0; n<NumPies; n++) {
+			var PiePlace = "<div class = 'pieBackground' id = '"+Ids[n]+"'></div>";
+			$(".pieArea").append(PiePlace);
+			DrawPie(n);
+		}
+	}
+
+	function PromptUser() {
+		$(".button").click(function() {
+			var NewPie = prompt("Enter the name of a new pie:");
+			if (NewPie.split(",").length==1 &&
+				NewPie.split(".").length==1) {
+				Ids.push(NewPie);
+				var NewDegrees = prompt("Enter the degree values for the pie, separated by commas. Degree values must add to 360.");
+
+				var NewDegreeList = NewDegrees.split(",");
+				var sum = 0;
+				for (a in NewDegreeList) {
+					NewDegreeList[a] = parseInt(NewDegreeList[a],10);
+					sum = sum + NewDegreeList[a];
+				}
+
+				if (sum == 360) {
+					Pies.push(NewDegreeList);
+					IdsLength = Ids.length;
+					var PiePlace = "<div class = 'pieBackground' id = '"+Ids[IdsLength-1]+"'></div>";
+					$(".pieArea").append(PiePlace);
+					DrawPie(Pies.length-1);
+				}
+
+				else {
+					alert("Degree values must sum to 360.");
+					Ids.splice(-1,1);				
+				}
+			}
+			else {alert("Please do not include commas or other punctuation in the new pie name.");}
+
+		});
+	}
+
+	$(document).ready(DrawAll);
+	$(document).ready(PromptUser);
+
+
+	</script>
+
+	<style type="text/css">
+
+	.pieArea
+	{
+		background-color: rgba(200,200,250,.5);
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0px;
+		top: 0px;
+		min-width: 800px;
+	}
+
+	.info
+	{
+		position: absolute;
+		width: 80%;
+		left: 9%;
+		top: 350px;
+		background-color: rgba(200,200,250,.6);
+		color: rgba(80,80,100,1);
+		font: 12px sans-serif;
+		padding: 1%;
+		line-height: 20px;
+		min-width: 600px;
+	}
+
+	.button
+	{
+		width: 40%;
+		margin: 20px 30% 0px 30%;
+		text-align: center;
+		background-color: rgba(100,100,200,.7);
+		color: white;
+		cursor: pointer;
+	}
+
+	.pieBackground
+	{
+		float: left;
+		margin: 40px 20px 40px 80px;
+		background-color: rgba(250,250,250,1);
+		width: 150px;
+		height: 150px;
+		border-radius: 50%;
+	}
+
+	.rightEdge
+	{
+		position: absolute;
+		border-radius: 75px 0px 0px 75px;
+		width: 75px;
+		height: 150px;
+		overflow: hidden;
+
+		-webkit-transform-origin: right center;
+	}
+
+
+	.piece
+	{
+		position: absolute;
+		border-radius: 0px 75px 75px 0px;
+		width: 75px;
+		height: 150px;
+		left: 75px;	
+
+
+		-webkit-transform-origin: left center;
+	}
+
+
+	</style>
+</head>
+<body>
+
+	<div class = "pieArea"></div>
+
+	<div class = "info">
+		<strong> How to make a pie chart using css:</strong> <br><br>
+		Create a background for the pie and attach class "pieBackground" to the element. The background should specify a height and width for the pie as well as set border-radius to 50%. <br><br>
+		Within the pie background div, create a container with class "pieceContain" for each piece of the pie. The container should be a semicircle (can be acheived using either the border-radius property or clip). Overflow should be set to hidden. <br><br>
+		Within each container, create a subsequent div with class "piece". This piece should be a semi-circle just like its container. <br><br>
+		Rotate each container clockwise and each piece div counter-clockwise so that they form the left and right sides of the pie piece. 
+		<div class = "button">Click here to create a new pie!</div>
+	</div>
+
+</body>
+</html>

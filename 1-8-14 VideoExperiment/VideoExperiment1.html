@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Video Experiment 1</title>
+	
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery.fullscreen-min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	function SetVidDim() {
+		var WindowWidth = $(window).width();
+		var WindowHeight = $(window).height();
+
+		var VidWidth = $("video").width();
+		$("video").css("width",(VidWidth-300)+"px");
+
+		VidWidth = $("video").width();
+		var VidLeft = (WindowWidth - VidWidth)/2;
+		$("video").css("left",VidLeft+"px");
+
+		$(".fullScreen:eq(0)").css("right",(VidLeft+5)+"px");
+		$(".fullScreen:eq(1)").css("right",(VidLeft+5)+"px");
+
+		var CircleTop = (WindowHeight-100)/2;
+		var CircleLeft = (WindowWidth-100)/2;
+		$(".circle").css({"top":CircleTop+"px","left":CircleLeft+"px"});
+		$(".pause:eq(0)").css("left","30px");
+		$(".pause:eq(1)").css("left","55px");
+	};
+
+	function ButtonEvents() {
+		$('.circle').click(function(){
+  			if ($('video').get(0).paused) {
+  				$(".pause").css("opacity","1");
+  				$(".play").css("opacity","0");
+  				$('video').get(0).play();
+  			}
+  			else {
+  				$('video').get(0).pause();
+  				$(".pause").css("opacity","0");
+  				$(".play").css("opacity","1");
+  			}
+      	});
+
+      	$(".button").mouseleave(function() {
+      		$(".button").css("opacity","0");
+      	});
+
+      	$(".button").mouseenter(function() {
+      		$(".button").css("opacity","1");
+      	});
+	};
+
+	function FormatFullscreen() {
+		var WindowWidth = $(window).width();
+		var VidWidth = $("video").width();
+		var VidLeft = (WindowWidth - VidWidth)/2;
+		var WindowHeight = $(window).height();
+		var CircleTop = (WindowHeight-100)/2;
+		var CircleLeft = (WindowWidth-100)/2;
+
+		$(".fullScreen:eq(0)").css("background-image","url('fullscreen_button.png')");
+		$(".fullScreen:eq(1)").css({"background-image":"url('fullscreenOff_button.png')","display":"none"});
+
+		$(".fullScreen:eq(1)").click(function() {
+			$("video").fullScreen(false);
+			$("video").css("left",VidLeft+"px");
+			$(".circle").css({"top":CircleTop+"px","left":CircleLeft+"px"});
+			$(".fullScreen:eq(0)").fadeIn(500);
+			$(".fullScreen:eq(1)").fadeOut(0);
+		});
+
+		$(".fullScreen:eq(0)").click(function() {
+			$("video").css("left","0px");
+			$("video").fullScreen(true);
+			$(".circle").css({"top":((screen.height-100)/2)+"px","left":((screen.width-100)/2)+"px"});
+			$(".fullScreen:eq(0)").fadeOut(0);
+			$(".fullScreen:eq(1)").fadeIn(500);
+			$(".fullScreen:eq(1)").css({"top":"40px","right":"40px"});
+		});
+
+		$(document).keyup(function(e) { 
+			var ESC = 27;
+		   	if (e.which == ESC) { 
+		  		$("video").css("left",VidLeft+"px"); 
+		  		$(".circle").css({"top":CircleTop+"px","left":CircleLeft+"px"});
+		  		$(".fullScreen:eq(0)").fadeIn(500);
+				$(".fullScreen:eq(1)").fadeOut(0);
+		  	}
+		}); 
+	};
+
+	$(document).ready(SetVidDim);
+	$(document).ready(ButtonEvents);
+	$(document).ready(FormatFullscreen);
+
+	</script>
+
+	<style type="text/css">
+
+		body 
+		{
+		    background-color: rgb(230,230,250);
+		    font: 11px sans-serif;
+		    color: white;
+		    text-align: center;
+		    min-height: 1000px;
+		    min-width: 1000px;
+		}
+
+		video
+		{
+			position: absolute;
+			height: 97%;
+			top: 0%;
+		}
+
+		video::-webkit-media-controls 
+		{
+ 			 display:none !important;
+		}
+
+		.button
+		{
+			position: absolute;
+			cursor: pointer;
+
+			-webkit-transition: opacity 1s;
+			z-index: 2147483647;
+		}
+
+		.circle
+		{
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+			border: 2px solid rgba(210,210,230,1);
+		}
+
+		.play
+		{
+			position: absolute;
+			top: 20px;
+			left: 45px;
+			width: 0; 
+			height: 0; 
+			opacity: 1;
+			border-top: 30px solid transparent;
+			border-bottom: 30px solid transparent;
+		
+			border-left: 20px solid rgba(210,210,230,1);
+			z-index: 2147483647;
+		}
+
+		.pause
+		{
+			position: absolute;
+			top: 20px;
+			width: 15px;
+			height: 60px;
+			background-color: rgba(210,210,230,1);
+			opacity: 0;
+			z-index: 2147483647;
+		}
+
+		.fullScreen
+		{
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			border-radius: 10px;
+			top: 60px;
+			background-size: 30px 30px;
+			background-position: center center;
+			background-repeat: no-repeat;
+		}
+
+	</style>
+
+</head>
+<body>
+
+	<video>
+	  <source src="SpiderWeb.mp4" type="video/mp4">
+	  Your browser does not support the video tag.
+	</video>
+
+	<div class = "fullScreen button"></div>
+	<div class = "fullScreen button"></div>
+
+	<div class = "circle button">
+		<div class = "play"></div>
+		<div class = "pause"></div>
+		<div class = "pause"></div>
+	</div>
+
+</body>
+</html>

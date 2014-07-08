@@ -1,0 +1,182 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Grid Experiment</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	function DrawGrid(size) {
+	    var ratioW = Math.floor($(".gridArea").width()/size)+1,
+	        ratioH = Math.floor($(".gridArea").height()/size)+1;
+
+	    $(".gridArea").css({"width":((ratioW-1)*150)+"px","height":((ratioH-1)*150)+"px"});
+	    
+	    $(".grid").css({"width":(ratioW*size),"height":(ratioH*size)});
+
+	    var TotalBoxes = ratioH * ratioW;
+	    for (m=0; m<TotalBoxes; m++) {
+	    	var gridBox = $('<div />', {
+	            width: size - 1, 
+	            height: size - 1
+	         });
+			$(".grid").append(gridBox);
+	    };
+
+	    var TotalPoints = (ratioH - 1)*(ratioW -1);
+	    for (n=0; n<TotalPoints; n++) {
+			var point = "<div class = 'gridPt intersection'></div>";
+			$(".gridArea:eq(1)").append(point);
+		};
+	}	
+
+	function CreateGrid() {
+		DrawGrid(150);
+	};
+
+
+	function IntersectionClick() {
+		$(".intersection").click(function() {
+			if ($(this).hasClass("open")==true) {
+				var cancel = confirm("Delete this space?");
+				if (cancel == true) {
+					$(this).css({"width":"50px","height":"50px","margin":"50px"});
+					$(this).removeClass("open");
+					$(this).html("");
+				}
+			}
+			else {
+				var occupancy = prompt("Occupancy:", 50);
+				if (occupancy!=null) {
+					$(this).html(occupancy);
+					if (occupancy<14) {occupancy=14;}
+					if (occupancy>146) {occupancy = 146;}
+					var MarginLeft = (150 - occupancy)/2;
+					$(this).css({"width":occupancy+"px", "height":occupancy+"px","line-height":occupancy+"px"});
+					$(this).css("margin",MarginLeft+"px");
+					$(this).addClass("open");
+				}
+			}
+		});
+
+		$(".instructions").click(function() {
+			$(this).toggleClass("hidden");
+		});
+	};
+
+	$(document).ready(CreateGrid);
+	$(document).ready(IntersectionClick);
+
+	</script>
+
+	<style type="text/css">
+
+	body
+	{
+		background-color: rgba(200,200,250,.5);
+		font: 11px sans-serif;
+		color: white;
+		text-align: center;
+		padding: 0px;
+	}
+
+	.instructions
+	{
+		position: absolute;
+		width: 40%;
+		left: 30%;
+		bottom: 15%;
+		padding: 15px;
+		z-index: 3;
+		background-color: rgba(100,100,180,.7);
+
+		-webkit-transition: all 2s;
+		cursor: pointer;
+	}
+
+	.hidden
+	{
+		-webkit-transform: translate(0,200px);
+	}
+
+	.gridArea:nth-child(1)
+	{
+		background-color: rgba(250,250,250,.9);
+	}
+
+	.gridArea
+	{
+		position: absolute;
+		width: 90%;
+		height: 90%;
+		top:5%;
+		left: 5%;
+		overflow: hidden;
+		min-width: 900px;
+		min-height: 400px;
+	}
+
+	.intersection
+	{
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		background-color: rgba(250,100,100,.7);
+
+		-webkit-transform: scale(.1);
+		-webkit-transform-origin: center center;
+		-webkit-transition: all .5s;
+
+		cursor: pointer;
+		z-index: 2;
+	}
+
+	.gridPt
+	{
+		float: left;
+		margin: 50px;
+	}
+
+	.open
+	{
+		-webkit-transform: scale(1);
+	}
+
+	.grid 
+	{
+    	border: 1px solid #ccc;
+    	border-width: 1px 0 0 1px;
+    	z-index: 0;
+    	-webkit-transform: translate(-75px,-75px);
+	}
+
+	.grid div 
+	{
+    	border: 1px solid #ccc;
+    	border-width: 0 1px 1px 0;
+  	  	float: left;
+	}
+
+	</style>
+</head>
+<body>
+
+	<div class = "gridArea">
+		<div class = "grid"></div>
+	</div>
+	<div class = "gridArea"></div>
+
+	<div class = "instructions">
+		Instructions: <br>
+		Click on a grid point and enter a size for the space you want to diagram.
+		<br>
+		(Click to hide instructions)
+	</div>
+
+</body>
+</html>

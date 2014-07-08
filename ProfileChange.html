@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Profile Change</title>
+	
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	var Names = ["Pisu","Pepper","Kitkat"];
+	var About = ["I'm a little black cat and I'm very grumpy.",
+				"I'm a little shy, but I can be a bully.",
+				"I love FOOD!"];
+	var ProfilePhotos = ["flowers.jpg","friends.jpg","dark.jpg"];
+	var Photos = [["desert.jpg","desert.jpg","desert.jpg","desert.jpg"],
+				  ["dark.jpg","dark.jpg","dark.jpg","dark.jpg","flowers.jpg"],
+				  ["friends.jpg","friends.jpg","friends.jpg"]];
+	var Hobbies = ["sleeping","bullying, hiding, meowing","eating, chasing the spot!"];
+
+	function PositionButtons() {
+		var WindowHeight = $(window).height();
+		var WindowWidth = $(window).width();
+
+		var UserContainerTop = (WindowHeight - 300)/2-40;
+		$(".userContainer").css("top",UserContainerTop+"px");
+
+		var profileContainerWidth = (WindowWidth - 320);
+		$(".profileContainer").css("width",profileContainerWidth+"px");
+	};
+
+	function userClick() {
+		$(".userButton").each(function(i,obj) {
+			$(this).click(function() {
+				$(".name span").text(Names[i]);
+				$(".about").text(About[i]);
+				$(".name").css("background-image","url('"+ProfilePhotos[i]+"')");
+				$(".hobbies").text("hobbies: "+Hobbies[i]);
+				$("table").empty();
+				var row = $("<tr></tr>");	
+				PhotoLength = Photos[i].length;			
+				for (n=0; n<PhotoLength; n++) {
+					var col = $("<td></td>");
+					var object = $("<div></div>");
+					object.addClass("gallery");
+					object.css("background-image","url('"+Photos[i][n]+"')");
+					col.append(object);
+					row.append(col);
+				}
+				$(".photos table").append(row);
+			});
+		});
+	};
+
+	$( document ).ready(PositionButtons);
+	$( document ).ready(userClick);
+
+	window.onresize = function() {
+		stop();
+		PositionButtons();
+	};
+
+	</script>
+
+	<style type="text/css">
+
+	body
+	{
+		font: 11px sans-serif;
+		color: white;
+	}
+
+	.userContainer	
+	{
+		position: absolute;
+	}
+
+	.userButton
+	{
+		border-radius: 10px;
+		width: 60px;
+		height: 60px;
+		background-color: rgba(111,134,179,.8);
+		border: 1px solid white;
+		margin: 40px 0px 0px 30px;
+		text-align: center;
+
+		line-height: 55px;
+		-webkit-transition: background-color .5s;
+		transition: background-color .5s;
+	}
+
+	.userButton:hover
+	{
+		background-color: rgba(111,134,179,1); 
+	}
+
+	.profileContainer
+	{
+		position: absolute;
+		top: 10%;
+		left: 160px;
+		height: 80%;
+		border: 1px solid rgb(240,240,240);
+		background-color: rgba(240,240,240,.3);
+		min-width: 300px;
+		min-height: 400px;
+	}
+
+	.profileElement
+	{
+		margin: 20px 0px 0px 20px;
+		color: rgb(150,150,150);
+		min-height: 100px;
+	}
+
+	.name
+	{
+		width: 40px;
+		height: 40px;
+		background-size: auto 40px;
+		background-color: rgb(180,180,240);
+		min-height: 40px;
+	}
+
+	.name span
+	{
+		margin-left: 50px;
+		font-size: 16px;
+		color: rgb(100,100,100);
+		display: block;
+		padding-top: 10px;
+	}
+
+	.about
+	{
+		min-height: 100px;
+	}
+
+	.photos
+	{
+		height: 80px;
+		background-size: auto 80px;
+		background-repeat: no-repeat;
+	}
+
+	.gallery
+	{
+		height: 50px;
+		width: 50px;
+		background-size: auto 50px;
+		border: 2px solid white;
+	}
+
+	.gallery:hover
+	{
+		border: 2px solid rgb(150,150,250);
+	}
+
+	</style>
+
+</head>
+<body>
+
+	<div class = "userContainer"> 
+		<div class = "userButton">Pisu</div>
+		<div class = "userButton">Pepper</div>
+		<div class = "userButton">Kitkat</div>
+	</div>
+
+	<div class = "profileContainer">
+		<div class = "profileElement name"><span>name:</span></div>
+		<div class = "profileElement about">about:</div>
+		<div class = "profileElement hobbies">hobbies:</div>
+		<div class = "profileElement photos">photos: <br>
+			<table></table>
+		</div>
+	</div>
+
+</body>
+</html>

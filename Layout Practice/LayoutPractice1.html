@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Layout Practice v1</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+		function Format() {
+			$(".main").each( function(i,obj) {
+				var n = 10 + 27*i;
+				$(this).css("left",n+"%");
+				if (i==0) { $(this).css("background-color", "rgb(173,140,45)"); }
+				if (i==1) { $(this).css("background-color", "rgb(63,82,150)"); }
+				if (i==2) { $(this).css("background-color", "rgba(4,35,54,.9)"); }
+			});
+
+			$(".bodyInfo").each( function(i,obj) {
+				if (i==0) { $(this).css("background-color", "rgb(173,140,45)"); }
+				if (i==1) { $(this).css("background-color", "rgb(63,82,150)"); }
+				if (i==2) { $(this).css("background-color", "rgba(4,35,54,.9)"); }
+			});
+
+			$(".main").click( function() {
+				$(".main").addClass("close");
+				var bColor = $(this).css("background-color");
+				$(".bodyInfo").css("height","0px");
+				$(".bodyInfo").each(function(i,obj) {
+					if (bColor == $(this).css("background-color")) {
+						$(".main").css("opacity",".8");
+						$(this).delay(700).animate({height:"87%"},400);
+						$(".main").delay(2000).animate({opacity:"1"},500);
+					}
+				});
+			});
+		};
+
+
+
+		$( document ).ready(Format);
+
+	</script>
+
+	<!-- CSS code -->
+	<style type="text/css">
+
+		@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,400italic);
+		@import url(http://fonts.googleapis.com/css?family=Playfair+Display:900italic);
+
+		body
+		{
+			font-family: 'Source Sans Pro';
+			cursor: default;
+		}
+
+		#login div
+		{
+			position: absolute;
+			width: 24px;
+			top:3px;
+			height: 24px;
+
+			background-color: rgba(4,35,54,.5)
+		}
+
+		#login
+		{
+			background-color: rgba(245,245,245,1);
+			position: absolute;
+			right: 90px;
+			top: 15px;
+
+			width: 130px;
+			height: 30px;
+
+			font-size: 10px;
+			line-height: 30px;
+		}
+
+		#login span
+		{
+			position: absolute;
+			right:13px;
+		}
+
+		#body
+		{
+			position: absolute;
+			bottom: 4%;
+
+			width: 99%;
+			height: 86%;
+		}
+
+		.main
+		{
+			position: absolute;
+			bottom: 0px;
+			cursor: pointer;
+
+			width: 25%;
+			height: 100%;
+
+			text-align: center;
+			font-size: 13px;
+			color: white;
+			line-height: 45px;
+
+			transition: height 1s;
+			-webkit-transition: height 1s;
+		}
+
+		.close
+		{
+			height: 9%;
+		}
+
+		.bodyInfo
+		{
+			position: absolute;
+			width: 79%;
+			height: 0px;
+			bottom: 13%;
+			left: 10%;
+
+			font: 170px 'Playfair Display';
+			color: white;
+
+			transition: height .7s .1s;
+			-webkit-transition: height .7s .1s;
+
+			overflow: hidden;
+		}
+
+		.bodyInfo span
+		{
+			position: absolute;
+			text-align: center;
+			top:2%;
+			width:100%;
+			-webkit-transform:rotate(-20deg);
+		}
+
+	</style>
+</head>
+
+<!-- the HTML -->
+<body>
+
+	<div id = "login">
+		<div></div>
+		<span>UserName logout</span>
+	</div>
+
+	<div id = "body">
+		<div class = "bodyInfo"><span><em>Profile<br>Page</em></span></div>
+		<div class = "bodyInfo"><span><em>Workouts<br>Page</em></span></div>
+		<div class = "bodyInfo"><span><em>Results<br>Page</em></span></div>
+
+		<div class = "main">profile</div>
+		<div class = "main">generate workout</div>
+		<div class = "main">results</div>
+	</div>
+
+</body>
+
+</html>

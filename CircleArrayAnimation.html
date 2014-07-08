@@ -1,0 +1,158 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Circle Array Animation</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	var array1 = ["me","the Whale"];
+	var array2 = ["code","web design","architecture","graphic","lunar gala"];
+	var array3 = ["games","painting","sketchbook","photography","inspiration","travel","blog"];
+	var array4 = ["resume","portfolio","personal site"];
+	var array5 = ["email","other sites"];
+
+	function FormatChoices() {
+		$(".choices").css({"position":"absolute", "left":"80px"});
+		$(".choices").each( function(i,obj) {
+			n = 80 + 100*i;
+			$(this).css("top",n+"px");
+		});
+	};
+
+	function CircleClick() {
+		$(".circle").click(function() {
+			$(".array").removeClass("open")
+			$(this).children(".array").addClass("open");
+		});
+	};
+
+	function MakeTable(arrayName) {
+		var table = $("<table cellspacing='20'></table>").addClass("array");
+		var total = arrayName.length;
+		var remainder = total % 4;
+		if (remainder == 0) {remainder = 4;}
+		for (i=0; i<(total/4-1); i++) {
+			var row = $("<tr></tr>");
+			for (n=0; n<4; n++) {
+				var object = "<td><div class='circle'>"+arrayName[i*4+n]+"</div></td>";
+				row.append(object); 
+			} 
+			table.append(row); 
+		}
+		var row = $("<tr></tr>");
+		for (j=remainder; j>0; j--) {
+			var object = "<td><div class='circle'>"+arrayName[total-j]+"</div></td>";
+			row.append(object); 
+			} 
+		table.append(row);
+		return table;
+	};
+
+	$( document ).ready(FormatChoices);
+	$( document ).ready(CircleClick);
+	$( document ).ready(function() {
+		$(".choices:eq(0)").append(MakeTable(array1));
+		$(".choices:eq(1)").append(MakeTable(array2));
+		$(".choices:eq(2)").append(MakeTable(array3));
+		$(".choices:eq(3)").append(MakeTable(array4));
+		$(".choices:eq(4)").append(MakeTable(array5));
+	});
+
+	</script>
+
+	<style type="text/css">
+
+	@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic);
+
+	body
+	{
+		font: 11px "Source Sans Pro";
+		text-align: center;
+		line-height: 56px;
+		cursor: default;
+		background-color: rgba(240,240,240,1);
+	}
+
+	.choices
+	{
+		cursor: pointer;
+	}
+
+	.circle
+	{
+		border-radius: 50%;
+		width: 60px;
+		height: 60px;
+		background-color: rgba(235,163,9,1);
+		color: white;
+
+		-webkit-transition: background-color .5s, opacity .5s;
+	}
+
+	.circle:hover
+	{
+		background-color: rgba(235,103,9,1);
+	}
+
+	.array
+	{
+		position: absolute;
+		top: -20px;
+		left: 140px;
+		opacity: 0;
+		-webkit-transform: scale(.9);
+		-webkit-transition: opacity 1s .1s;
+	}
+
+	.open
+	{
+		opacity: 1;
+	}
+
+	.navStrip
+	{
+		position: absolute;
+		left: 60px;
+		top: 0px;
+		width: 100px;
+		height: 100%;
+		background-color: rgba(213,224,222,.6);
+	}
+
+	.infoSpace
+	{
+		position: absolute;
+		border-radius: 50%;
+		right: 13%;
+		top: 18%;
+		width: 500px;
+		height: 400px;
+		background-image: url('windswept_trees.jpg');
+		background-size: auto 500px;
+		background-position: center;
+	}
+
+	</style>
+
+</head>
+
+<body>
+
+	<div class = "navStrip"></div>
+
+	<div class = "circle choices">about</div>
+	<div class = "circle choices">projects</div>
+	<div class = "circle choices">just for fun</div>
+	<div class = "circle choices">resume</div>
+	<div class = "circle choices">contact</div>
+
+	<div class = "infoSpace"></div>
+
+</body>
+</html>

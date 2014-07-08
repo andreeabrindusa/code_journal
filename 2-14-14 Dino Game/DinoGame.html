@@ -1,0 +1,394 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<title>Dino Game</title>
+
+	<!-- jquery library --> 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>	
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	<!-- javascript code -->
+	<script type="text/javascript">
+
+	// Three types of flowers may bloom: Daisy, Tulip, Rose.  
+	// Each flower type's information is stored in the following array order:
+	// [flower images before, during, and after bloom; frequency; points]
+
+	var Flower_Types = [
+		["flower_before.png","Flower.png","flower_after.png","eaten_flower.png", .3, 20], 
+		["goldflower_before.png","goldflower.png","goldflower_after.png","eaten_goldflower.png", .2, 30],
+		["daisy_before.png","daisy.png","daisy_after.png","eaten_daisy.png", .5, 10]];
+
+	// initialize some variables: total number of shrubs and flowers on the screen at one time
+	// and beginning score (number of points starts at 0). 
+
+	var Num_Shrubs = 10;
+	var Num_Flowers = 1;
+	var Points = 0;
+
+	// updates the score
+
+	function DisplayScore() {
+		$("#Score").html("Your Score:  " + Points);
+	};
+
+	// takes an object and randomly places it in a spot on the game screen grid 
+	// (with 20px square units)
+	// also updates the object's z-index according to the spot it is placed in
+	// to maintain a layered effect on the map
+
+	function Randomly_Place(object) {
+		var Object_Size = object.css("z-index");	
+		var Grid_Unit = 20;
+
+		var GameScreen_Width = $("#GameScreen").width();
+		var GameScreen_Height = $("#GameScreen").height();
+
+		var X_Grid = GameScreen_Width / Grid_Unit;
+		X_Grid = Math.floor(X_Grid);
+		var Y_Grid = GameScreen_Height / Grid_Unit;
+		Y_Grid = Math.floor(Y_Grid);
+
+		var X_Coord = Math.random();
+		X_Coord = X_Coord * (X_Grid-1);
+		X_Coord = Math.round(X_Coord) * 20;
+
+		var Y_Coord = Math.random();
+		Y_Coord = Y_Coord * (Y_Grid-1);
+		var Object_ZIndex = Math.round(Y_Coord)-Object_Size;
+		Y_Coord = Math.round(Y_Coord) * 20;
+
+		object.css({"left":X_Coord+"px", "top":Y_Coord+"px", "z-index":Object_ZIndex});
+	};
+
+
+	// creates as many shrubs as the total number of shrubs indicated by Num_Shrubs
+	// and sends them to Randomly_Place() to be distributed throughout the map
+
+	function CreateShrubs() {
+
+		for (i=0; i<Num_Shrubs; i++) {
+			var Shrub_Html = '<div class = "Shrub"></div>';
+			$("#GameScreen").append(Shrub_Html);
+		};
+		for (j=0; j<Num_Shrubs; j++) {		
+			var Current_Shrub = $(".Shrub").eq(j);
+			Randomly_Place(Current_Shrub);
+		};
+	};
+
+	// creates as many flowers as the total indicated by Num_Flowers
+	// and sends them to be randomly distributed and be given random identities
+
+	function CreateFlowers() {	
+
+			var Current_Flower = $(".Flower");
+			Randomly_Place(Current_Flower);
+
+			Current_Flower.addClass("Bloom");
+
+			setTimeout(function() {
+				Current_Flower.removeClass("Bloom");
+			},9500);
+	};
+
+
+	// handles the button clicks that move the Dino and make him eat
+	
+
+	function MoveDino() {
+		var GameScreen_Width = $("#GameScreen").width();
+		var GameScreen_Height = $("#GameScreen").height();
+		var Dino_Width = $("#Dino").width();
+		var Dino_Height = $("#Dino").height();
+
+		var Arrow_Up = 38;
+		var Arrow_Down = 40;
+		var Arrow_Left = 37;
+		var Arrow_Right = 39;
+		var Space_Bar = 32;
+
+		var Dino_Position = $("#Dino").position();
+		var From_Left = Dino_Position.left;
+		var From_Top = Dino_Position.top;
+
+		var Facing_Direction = "Right";
+		var Dino_ZIndex = 0;
+
+		$(window).keydown(function() {
+			var Key = event.which;
+			if (Key == Arrow_Right)
+				{
+					$("#Dino").css("background-image","url('DinoRight.png')");
+					From_Left = From_Left + 20;
+					if (From_Left>(GameScreen_Width-Dino_Width)) {From_Left = From_Left-20;}
+					$("#Dino").css("left",From_Left+"px");
+					Facing_Direction = "Right";
+				}
+
+			if (Key == Arrow_Left)
+				{
+					$("#Dino").css("background-image","url('DinoLeft.png')");
+					From_Left = From_Left - 20;
+					if (From_Left<0) {From_Left = 0;}
+					$("#Dino").css("left",From_Left+"px");
+					Facing_Direction = "Left";
+				}
+
+			if (Key == Arrow_Up)
+				{
+					$("#Dino").css("background-image","url('DinoBack.png')");
+					From_Top = From_Top - 20;
+					Dino_ZIndex = Dino_ZIndex - 1;
+					Facing_Direction = "Up";
+
+					if (From_Top<0) {
+						From_Top = 0;
+						Dino_ZIndex = Dino_ZIndex + 1;
+					}
+
+					$("#Dino").css("top",From_Top+"px");
+					$("#Dino").css("z-index",Dino_ZIndex);
+				}
+
+			if (Key == Arrow_Down)
+				{
+					$("#Dino").css("background-image","url('DinoFront.png')");
+					From_Top = From_Top + 20;
+					Dino_ZIndex = Dino_ZIndex + 1;
+					Facing_Direction = "Down";
+
+					if (From_Top>(GameScreen_Height-Dino_Height)) {
+						From_Top = From_Top-20;
+						Dino_ZIndex = Dino_ZIndex - 1;
+					}
+
+					$("#Dino").css("top",From_Top+"px");
+					$("#Dino").css("z-index",Dino_ZIndex);
+				}
+
+			if (Key == Space_Bar) 
+				{
+					var Dino_Position = $("#Dino").position();
+					var Flower_Position = $(".Flower").position();
+					var Flower_Coord = [Flower_Position.left, Flower_Position.top];
+					var Dino_Coord = [Dino_Position.left, Dino_Position.top];
+
+					if (Facing_Direction == "Right" && 
+						Flower_Coord[0] == Dino_Coord[0] + 120 &&
+						Flower_Coord[1] == Dino_Coord[1] + 20)
+						 {
+							$("#Dino").css("background-image","url('DinoEatingRight.png')");
+							EatFlower();
+							setTimeout(function() {
+								$("#Dino").css("background-image","url('DinoRight.png')");
+							},500);
+						 }
+
+					if (Facing_Direction == "Left" && (
+						Flower_Coord[0] == Dino_Coord[0] || Flower_Coord[0] == Dino_Coord[0] - 20) &&
+						Flower_Coord[1] == Dino_Coord[1] + 20)
+						 {
+							$("#Dino").css("background-image","url('DinoEatingLeft.png')");
+							EatFlower();
+							setTimeout(function() {
+								$("#Dino").css("background-image","url('DinoLeft.png')");
+							},500);
+						 }
+
+					if (Facing_Direction == "Up" && (
+						Flower_Coord[0] == Dino_Coord[0] + 60 || Flower_Coord[0] == Dino_Coord[0] + 40) &&
+						Flower_Coord[1] == Dino_Coord[1]) 
+						{
+							$("#Dino").css("background-image","url('DinoEatingBack.png')");
+							EatFlower();
+							setTimeout(function() {
+								$("#Dino").css("background-image","url('DinoBack.png')");
+							},500);
+						}
+
+					if (Facing_Direction == "Down" && (
+						Flower_Coord[0] == Dino_Coord[0] + 60 || Flower_Coord[0] == Dino_Coord[0] + 40) &&
+						Flower_Coord[1] == Dino_Coord[1] + 40)						
+						{
+							$("#Dino").css("background-image","url('DinoEatingFront.png')");
+							EatFlower();
+							setTimeout(function() {
+								$("#Dino").css("background-image","url('DinoFront.png')");
+							},500);
+						}
+		 		}
+		});	
+	};
+
+	// cancels animations for the flower existing and animates it being eaten
+	// updates the score 
+
+	function EatFlower() {
+
+		$(".Flower").removeClass("Bloom");
+		$(".Flower").addClass("EatenFlower");
+		setTimeout(function() {
+			$(".Flower").removeClass("EatenFlower");
+			$(".Flower").css({"left":"0px","top":"0px"});
+		},800);
+
+		Points = Points + 10;
+		DisplayScore();
+	};
+
+	// -------------------------------------------------------------------------------- //
+
+	function Set_Up_Game() {
+		DisplayScore();
+		CreateShrubs();
+		MoveDino();
+		CreateFlowers();
+		var Level_One_Interval = setInterval(function() {
+			CreateFlowers();
+		},10000);
+	};
+
+	$(document).ready(Set_Up_Game);
+
+	</script>
+	<style type="text/css">
+
+	@-webkit-keyframes bloom
+	{
+		0% {background-image: none;}
+		10% {background-image: url('flower_before.png');}
+		30% {background-image: url('flower_before.png');}
+		40% {background-image: url('flower.png');}
+		70% {background-image: url('flower.png');}
+		80% {background-image: url('flower_after.png');}
+		100% {background-image: url('flower_after.png');}
+	}
+
+	@keyframes bloom
+	{
+		0% {background-image: none;}
+		10% {background-image: url('flower_before.png');}
+		30% {background-image: url('flower_before.png');}
+		40% {background-image: url('flower.png');}
+		70% {background-image: url('flower.png');}
+		80% {background-image: url('flower_after.png');}
+		100% {background-image: url('flower_after.png');}
+	}
+
+
+	body
+	{
+		background-color: rgb(230,230,230);
+	}
+
+	#GameScreen
+	{
+		position: absolute;
+		width: 90%;
+		height: 94%;
+		left: 5%;
+		top: 3%;
+		background-color: rgb(120,216,120);
+
+		overflow: hidden;
+	}
+
+	#Score
+	{
+		position: absolute;
+		bottom: 4%;
+		left: 6%;
+		padding: 3px;
+
+		width: 140px;
+		height: 20px;
+		border: 1px solid white;
+		font: 18px sans-serif;
+		color: white;
+
+		z-index: 100;
+		background-color: rgba(100,100,100,.3);
+	}
+
+	#Rules
+	{
+		position: absolute;
+		bottom: 4%;
+		right: 6%;
+		padding: 5px;
+		width: 200px;
+		height: 100px; 
+
+		border: 1px solid white;
+		font: 12px sans-serif;
+		color: white;
+
+		z-index: 100;
+		background-color: rgba(100,100,100,.4);
+		line-height: 15px;
+	}
+
+	.Shrub
+	{
+		position: absolute;
+		width: 4%;
+		height: 4%;
+		background-image: url('grass.png');
+		background-size: auto 100%;
+		background-repeat: no-repeat;
+
+		z-index: 2;
+	}	
+
+	#Dino
+	{
+		position: absolute;
+		width: 12%;
+		height: 12%;
+		background-image: url('DinoRight.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+
+	.Flower
+	{
+		position: absolute;
+		width: 4%;
+		height: 7%;
+		background-image: none;
+		background-size: auto 100%;
+		background-repeat: no-repeat;
+		background-position: bottom;
+
+		z-index: 0;
+	}
+
+	.Bloom
+	{
+		animation: bloom 9.6s;
+		-webkit-animation: bloom 9.6s;
+	}
+
+	.EatenFlower
+	{
+		background-image: url('eaten_flower.png');
+	}
+
+	</style>
+</head>
+<body>
+
+	<div id = "Score"></div>
+	<div id = "Rules">Move Dino using the arrow keys. <br><br>Eat a flower by standing next to it and pressing the Space Bar. <br><br>Each red flower is worth 10 pts! </div>
+
+	<div id = "GameScreen">
+		<div class = "Flower"></div>
+		<div id = "Dino"></div>
+	</div>
+
+
+</body>
+</html>
